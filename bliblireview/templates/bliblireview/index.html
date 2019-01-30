@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Blibli Sentiment Predictor</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Anton" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href={% static 'bliblireview/css/normalize.css' %}>
+    <link rel="stylesheet" href={% static 'bliblireview/css/skeleton.css' %}>
+    <link rel="stylesheet" href={% static 'bliblireview/css/custom.css' %}>
+    <link rel="icon" type="image/png" href="{% static 'bliblireview/images/tas.png' %}">
+</head>
+<body>
+	<div>
+		<center>
+			<table>
+				<tr>
+					<th bgcolor="dodgerblue"></th>
+					<th><h5 class="value-heading"> <a href="#wordcloud">Word Distribution</a></h4></th>
+					<th><h5 class="value-heading"> <a href="#demo">Predictor Demo</a></h4></th>
+					<th><h5 class="value-heading"> <a href="#method">Methodology</a></h4></th>
+					<th><h5 class="value-heading"> <a href="#metrics">Metrics</a></h4></th>
+					<th bgcolor="dodgerblue"></th>
+				</tr>
+			</table>
+		</center>
+	</div>
+    <div class="section values" style="background-image: url({% static 'bliblireview/images/container1.jpg' %})">
+        <div>
+            <div class="container">
+                <h2 class="value-title">Sentiment Predictor</h2>
+                <h5 class="value-heading"> Made by Adya Indera, Ivo Siddarta, Nicholas Andre</h5>
+                <br /><br />
+                <center><img src="{% static 'bliblireview/images/tas.png' %}" style="width: 20%;"> </center>
+            </div>
+        </div>
+        <div class="container">
+            <div class="one-third column value">
+                <h2 class="value-multiplier">955,273</h2>
+                <h5 class="value-heading">Data Set Used</h5>
+                <p>We cautiously clean spam messages into 603,579 data and map binary sentiments based on product review ratings.</p>
+            </div>
+            <div class="one-third column value">
+                <h2 class="value-multiplier">94.96%</h2>
+                <h5 class="value-heading">Training Accuracy</h5>
+                <p>This is our best accuracy based on 90,536 (15%) testing data using Recurring Neural Network with LSTM architecture. </p>
+            </div>
+            <div class="one-third column value">
+                <h2 class="value-multiplier">5 Models</h2>
+                <h5 class="value-heading">Performance comparison</h5>
+                <p>We conducted 5 learning approaches which consist of 4 Machine Learning approaches and 1 Neural Network approach. </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section values">
+        <div class="container">
+            <div class="seven columns">
+                <h2 class="value-multiplier" id="wordcloud"> <br><br><br> Word Distribution</h2>
+                <h5 class="value-heading">Visualization by WordCloud</h5>
+            </div>
+            <div class="five columns">
+                <img src="{% static 'bliblireview/images/wc_overall.jpg' %}" style="width: 100%;">
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="four columns">
+                <img src="{% static 'bliblireview/images/wc_positive.jpg' %}" style="width: 100%;">
+                <h6 class="value-heading">Positive Data</h6>
+            </div>
+            <div class="four columns">
+                <h5 class="value-heading"><br /><br />Frequency Comparison</h5>
+            </div>
+
+            <div class="four columns">
+                <img src="{% static 'bliblireview/images/wc_negative.jpg' %}" style="width: 100%;">
+                <h6 class="value-heading">Negative Data</h6>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <form action="." method="get">
+            <div class="row">
+                <div class="six columns">
+                    <center>
+                        <h3 class="value-multiplier" id="demo">Predictor Demo</h3>
+						<br>
+                    </center>
+                    <center>
+						<h6 class="value-heading">Insert product review message to be analyzed:</h6>       
+                        <input type="text" name="review" autofocus>
+                        <input class="button-primary" type="submit" name="predict-btn" value="PREDICT!">
+                    </center>
+                </div>
+                <div class="six columns">
+                    <center>
+                        <table>
+                            <tr>
+                                <th bgcolor="dodgerblue"></th>
+                                <th style="color:dodgerblue"> Positive </th>
+                                <th style="color:orangered"> Negative</th>
+                                <th bgcolor="orangered"></th>
+                            </tr>
+                        </table>
+                    </center>
+                    <textarea readonly cols=50% rows=2> {{ prediction }} </textarea>
+                    <center>
+                        <table>
+                            <tr>
+                                {% for m,pred in MODELS.items %}
+                                    {% if pred == 0 %}
+                                        <th style="color: orangered"> {{ m }} </h5> </th>
+                                    {% elif pred == 1 %}
+                                        <th style="color: dodgerblue"> {{ m }} </h5></th>
+                                    {% else %}
+                                        <th> {{ m }} </th>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        </table>
+                    </center>                
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="section hero">
+        <div class="row">
+            <div class="twelve column">
+                <h2 class="value-multiplier" id="method">Methodology</h2> <br><br>
+            </div>
+        </div>
+        <div class="row">
+            <div class="six columns">
+				<center>
+					<h2 class="value-heading"> <b>#1</b></h2> <br />
+					<h5 class="value-heading">Data Collecting</h5> <br>
+					<p>
+						We analyzed CSV file data and merged title and message strings. Then we translated 5-star rating into a binary-valued sentiment with the following criteria:
+						<ul>
+							<li>Positive sentiment: 4-5 rating.</li>
+							<li>Negative sentiment: 1-2 rating.</li>
+							<li>Neutral sentiment : 3 rating is dropped. </li>
+						</ul>
+					</p>
+					<p>Translated data then be split into training and testing sets</p>
+				</center>
+            </div>
+			
+			<div class="six columns">
+				<center>
+					<h2 class="value-heading"> <b>#2</b></h2> <br />
+					<h5 class="value-heading">Data Filtering</h5><br>
+					<p> We selectively filtered spam messages and contradictive reviews to reduce our raw 955,273 dataset into 603,579 meaningful dataset </p>
+					<p> Applied multiple regex to trim duplicating characters and spam words based on wordcloud </p>
+				</center>
+			</div>
+        </div>
+		
+		<div class="row">
+            <div class="six columns">
+				<center>
+					<h2 class="value-heading"> <b>#3A</b></h2> <br />
+					<h5 class="value-heading">Machine Learning </h5><br>
+					<p> We vectorized cleaned dataset using TFIDF Vectorizer with (1,2) Grams and (1,3) Grams.</p>
+					<p> Applied ~750 Indonesian stop words from text file to truncate bag of words / vector. </p>
+					<p> Transformed vectors and train the model to get NDArray.  </p>
+					<p> Tested model using testing dataset and compute accuracy score, f1 score, and confusion matrix. </p>
+				</center>
+            </div>
+			
+			<div class="six columns">
+				<center>
+					<h2 class="value-heading"> <b>#3B</b></h2> <br />
+					<h5 class="value-heading">Deep Learning</h5><br>
+					<p> We vectorized cleaned dataset using Keras  with max words of 2000. </p>
+					<p> Created the sequential model with neural networks of 2 LSTM and 1 final layer. </p>
+					<p> Trained model with 7 epochs and plot progession of each epochs.  </p>
+					<p> Tested model using testing dataset with 128 batch size. Computed accuracy score, f1 score, and confusion matrix. </p>
+				</center>
+			</div>
+        </div>		
+    </div>
+	
+	<div class="section hero">
+		<div class="row">
+            <div class="twelve column">
+                <h2 class="value-multiplier" id="metrics">Metrics</h2> <br><br>
+            </div>
+        </div>
+		
+		<div class="row">
+			<center>
+				<div class="four columns">
+					<img src="{% static 'bliblireview/images/rnn_cm.jpg' %}"></img>
+				</div>
+				
+				<div class="four columns">
+					<center>
+						<br> <br> <h5 class="value-header" id="method">Comparing 2 Best Learning Approaches</h5>
+						<h5 class="value-header" id="method">RNN LSTM - Logistic Regression</h5>
+					</center>
+				</div>
+				
+				<div class="four columns">
+					<img src="{% static 'bliblireview/images/logistic_cm.png' %}"></img>
+				</div>
+			</center>
+			<br><br>
+        </div>
+		
+		<div class="row">
+			<center>
+				<div class="six columns">
+					<img src="{% static 'bliblireview/images/ngrams.png' %}"></img>
+					<h5 class="value-header" id="method"> Comparing 2 N-Grams Approaches</h5>
+				</div>
+				
+				<div class="six columns">
+					<img src="{% static 'bliblireview/images/modelscore.jpg' %}"></img>
+					<h5 class="value-header" id="method"> Comparing Accuracy and F-1 Scores</h5>
+				</div>
+			</center>
+			<br> <br>
+        </div>		
+	</div>	
+</body>
+</html>
